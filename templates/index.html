@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 
 <head>
@@ -11,9 +10,8 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>World Utility Dashboard</title>
+    <title>WorldDesk</title>
 
-    <!-- Leaflet -->
     <link
         rel="stylesheet"
         href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -26,827 +24,819 @@
 
 </head>
 
-
 <body>
 
+<div class="app">
 
-<!-- =========================
-     SIDEBAR
-========================= -->
+    <!-- SIDEBAR -->
 
-<aside class="sidebar">
+    <aside class="sidebar">
 
-    <div class="brand">
+        <div class="brand">
 
-        <div class="brand-icon">
-            🌐
-        </div>
-
-        <div>
-            <h2>World<span>Desk by Mradul Singh</span></h2>
-            <small>UTILITY CENTER</small>
-        </div>
-
-    </div>
-
-
-    <nav>
-
-        <button
-            class="nav-btn active"
-            onclick="showSection('dashboard')"
-        >
-            🏠 Dashboard
-        </button>
-
-
-        <button
-            class="nav-btn"
-            onclick="showSection('world-clock')"
-        >
-            🌍 World Clock
-        </button>
-
-
-        <button
-            class="nav-btn"
-            onclick="showSection('calculator')"
-        >
-            🧮 Calculator
-        </button>
-
-
-        <button
-            class="nav-btn"
-            onclick="showSection('stopwatch')"
-        >
-            ⏱️ Stopwatch
-        </button>
-
-
-        <button
-            class="nav-btn"
-            onclick="showSection('timer')"
-        >
-            ⏳ Timer
-        </button>
-
-
-        <button
-            class="nav-btn"
-            onclick="showSection('converter')"
-        >
-            🔄 Time Converter
-        </button>
-
-    </nav>
-
-
-    <div class="sidebar-footer">
-
-        <div class="online">
-            <span></span>
-            System Online
-        </div>
-
-        <small>
-            Flask + Docker
-        </small>
-
-    </div>
-
-</aside>
-
-
-<!-- =========================
-     MAIN
-========================= -->
-
-<main class="main">
-
-
-<header class="topbar">
-
-    <div>
-
-        <h1 id="page-title">
-            Dashboard
-        </h1>
-
-        <p>
-            Your personal utility center
-        </p>
-
-    </div>
-
-
-    <div class="top-status">
-
-        <span class="pulse"></span>
-
-        LIVE
-
-    </div>
-
-</header>
-
-
-<!-- =========================
-     DASHBOARD
-========================= -->
-
-<section
-    id="dashboard"
-    class="section active"
->
-
-
-    <div class="hero-grid">
-
-
-        <!-- CLOCK -->
-
-        <div class="hero-card clock-card">
-
-            <div class="card-label">
-                LOCAL TIME
+            <div class="brand-icon">
+                🌐
             </div>
 
-            <div
-                id="main-clock"
-                class="main-clock"
-            >
-                00:00:00
-            </div>
-
-            <div
-                id="main-date"
-                class="main-date"
-            >
-                Loading...
-            </div>
-
-            <div class="timezone-label">
-                🇮🇳 Asia/Kolkata
+            <div>
+                <h2>World<span>Desk by MRADUL</span></h2>
+                <small>UTILITY CENTER</small>
             </div>
 
         </div>
 
 
-        <!-- QUICK STATUS -->
-
-        <div class="hero-card">
-
-            <div class="card-label">
-                SYSTEM STATUS
-            </div>
-
-
-            <div class="status-row">
-
-                <span class="status-dot green"></span>
-
-                Flask API
-
-                <strong>ONLINE</strong>
-
-            </div>
-
-
-            <div class="status-row">
-
-                <span class="status-dot green"></span>
-
-                Docker
-
-                <strong>RUNNING</strong>
-
-            </div>
-
-
-            <div class="status-row">
-
-                <span class="status-dot green"></span>
-
-                World Clock
-
-                <strong>LIVE</strong>
-
-            </div>
-
+        <nav>
 
             <button
-                class="primary-btn"
-                onclick="checkHealth()"
+                class="nav-btn active"
+                onclick="showSection('dashboard')"
             >
-                Check API Health
+                🏠 Dashboard
             </button>
 
+            <button
+                class="nav-btn"
+                onclick="showSection('world')"
+            >
+                🌍 World Clock
+            </button>
 
-            <div
-                id="health-result"
-                class="health-result"
-            ></div>
+            <button
+                class="nav-btn"
+                onclick="showSection('calculator')"
+            >
+                🧮 Calculator
+            </button>
 
-        </div>
+            <button
+                class="nav-btn"
+                onclick="showSection('network')"
+            >
+                🌐 Network Tools
+            </button>
 
-    </div>
+            <button
+                class="nav-btn"
+                onclick="showSection('developer')"
+            >
+                🛠 Developer Tools
+            </button>
 
+            <button
+                class="nav-btn"
+                onclick="showSection('timers')"
+            >
+                ⏱ Timers
+            </button>
 
-    <!-- QUICK TOOLS -->
+            <button
+                class="nav-btn"
+                onclick="showSection('system')"
+            >
+                🐳 System
+            </button>
 
-    <div class="section-title">
+            <button
+                class="nav-btn"
+                onclick="showSection('notes')"
+            >
+                📝 Notes
+            </button>
 
-        <h2>Quick Tools</h2>
-
-    </div>
-
-
-    <div class="tools-grid">
-
-
-        <div
-            class="tool-card"
-            onclick="showSection('world-clock')"
-        >
-
-            <div class="tool-icon">🌍</div>
-
-            <h3>World Clock</h3>
-
-            <p>
-                Check live time around the world.
-            </p>
-
-        </div>
-
-
-        <div
-            class="tool-card"
-            onclick="showSection('calculator')"
-        >
-
-            <div class="tool-icon">🧮</div>
-
-            <h3>Calculator</h3>
-
-            <p>
-                Fast calculations whenever you need them.
-            </p>
-
-        </div>
+        </nav>
 
 
-        <div
-            class="tool-card"
-            onclick="showSection('stopwatch')"
-        >
+        <div class="sidebar-footer">
 
-            <div class="tool-icon">⏱️</div>
+            <span class="online-dot"></span>
 
-            <h3>Stopwatch</h3>
+            System Online
 
-            <p>
-                Track time with millisecond precision.
-            </p>
+            <small>Flask + Docker</small>
 
         </div>
 
-
-        <div
-            class="tool-card"
-            onclick="showSection('timer')"
-        >
-
-            <div class="tool-icon">⏳</div>
-
-            <h3>Timer</h3>
-
-            <p>
-                Create a simple countdown timer.
-            </p>
-
-        </div>
-
-    </div>
-
-</section>
+    </aside>
 
 
-<!-- =========================
-     WORLD CLOCK
-========================= -->
+    <!-- MAIN -->
 
-<section
-    id="world-clock"
-    class="section"
->
+    <main class="main">
 
-    <div class="section-heading">
+        <header class="topbar">
 
-        <h2>🌍 Interactive World Clock</h2>
+            <div>
 
-        <p>
-            Click a country to see its live local time.
-        </p>
+                <h1 id="page-title">
+                    Dashboard
+                </h1>
 
-    </div>
+                <p>
+                    Your personal developer utility center
+                </p>
 
-
-    <div class="map-container">
-
-        <div id="map"></div>
-
-
-        <div class="country-panel">
-
-            <div class="selected-country">
-                🌐 Selected Country
             </div>
 
-            <h2 id="country-name">
-                Select a country
+            <div class="live-badge">
+                <span></span>
+                LIVE
+            </div>
+
+        </header>
+
+
+        <!-- ================= DASHBOARD ================= -->
+
+        <section
+            id="dashboard"
+            class="section active"
+        >
+
+            <div class="dashboard-grid">
+
+                <div class="card big-clock">
+
+                    <span class="label">
+                        INDIA • LOCAL TIME
+                    </span>
+
+                    <div id="main-clock">
+                        00:00:00
+                    </div>
+
+                    <p id="main-date">
+                        Loading...
+                    </p>
+
+                    <span class="timezone">
+                        🇮🇳 Asia/Kolkata
+                    </span>
+
+                </div>
+
+
+                <div class="card">
+
+                    <span class="label">
+                        APPLICATION STATUS
+                    </span>
+
+                    <div class="status-line">
+                        🟢 Flask API
+                        <b>ONLINE</b>
+                    </div>
+
+                    <div class="status-line">
+                        🐳 Docker
+                        <b>RUNNING</b>
+                    </div>
+
+                    <div class="status-line">
+                        🌍 World Clock
+                        <b>LIVE</b>
+                    </div>
+
+                    <button
+                        class="btn primary"
+                        onclick="checkHealth()"
+                    >
+                        Check Health
+                    </button>
+
+                    <div id="health-result"></div>
+
+                </div>
+
+            </div>
+
+
+            <h2 class="section-title">
+                Quick Tools
             </h2>
 
 
-            <div
-                id="country-time"
-                class="country-time"
-            >
-                --:--:--
+            <div class="quick-grid">
+
+                <div
+                    class="tool"
+                    onclick="showSection('world')"
+                >
+                    🌍
+                    <b>World Clock</b>
+                    <small>Global time</small>
+                </div>
+
+                <div
+                    class="tool"
+                    onclick="showSection('network')"
+                >
+                    🌐
+                    <b>IP Calculator</b>
+                    <small>Subnet tools</small>
+                </div>
+
+                <div
+                    class="tool"
+                    onclick="showSection('developer')"
+                >
+                    {}
+                    <b>JSON Tools</b>
+                    <small>Format & validate</small>
+                </div>
+
+                <div
+                    class="tool"
+                    onclick="showSection('developer')"
+                >
+                    🔐
+                    <b>Hash Generator</b>
+                    <small>SHA / MD5</small>
+                </div>
+
+                <div
+                    class="tool"
+                    onclick="showSection('developer')"
+                >
+                    🔑
+                    <b>Password</b>
+                    <small>Generate secure passwords</small>
+                </div>
+
+                <div
+                    class="tool"
+                    onclick="showSection('timers')"
+                >
+                    ⏱
+                    <b>Pomodoro</b>
+                    <small>Focus timer</small>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= WORLD ================= -->
+
+        <section
+            id="world"
+            class="section"
+        >
+
+            <div class="section-heading">
+
+                <h2>🌍 World Clock</h2>
+
+                <p>
+                    Click a location to view its live time.
+                </p>
+
             </div>
 
 
-            <div
-                id="country-date"
-                class="country-date"
-            >
-                Click a country on the map
+            <div class="map-wrapper">
+
+                <div id="map"></div>
+
+                <div class="country-panel">
+
+                    <small>
+                        SELECTED LOCATION
+                    </small>
+
+                    <h2 id="country-name">
+                        Select a country
+                    </h2>
+
+                    <div id="country-time">
+                        --:--:--
+                    </div>
+
+                    <p id="country-date">
+                        --
+                    </p>
+
+                    <p id="country-zone">
+                        Timezone: --
+                    </p>
+
+                </div>
+
             </div>
 
 
-            <div
-                id="country-zone"
-                class="country-zone"
-            >
-                Timezone: --
+            <div class="clock-grid">
+
+                <div class="clock-card">
+                    🇮🇳 India
+                    <strong id="india-time">--</strong>
+                </div>
+
+                <div class="clock-card">
+                    🇬🇧 London
+                    <strong id="london-time">--</strong>
+                </div>
+
+                <div class="clock-card">
+                    🇺🇸 New York
+                    <strong id="ny-time">--</strong>
+                </div>
+
+                <div class="clock-card">
+                    🇯🇵 Tokyo
+                    <strong id="tokyo-time">--</strong>
+                </div>
+
             </div>
 
-        </div>
-
-    </div>
+        </section>
 
 
-    <div class="world-cards">
+        <!-- ================= CALCULATOR ================= -->
 
-        <div class="world-card">
-
-            🇮🇳
-
-            <strong>India</strong>
-
-            <span id="india-time">
-                --
-            </span>
-
-        </div>
-
-
-        <div class="world-card">
-
-            🇬🇧
-
-            <strong>London</strong>
-
-            <span id="london-time">
-                --
-            </span>
-
-        </div>
-
-
-        <div class="world-card">
-
-            🇯🇵
-
-            <strong>Tokyo</strong>
-
-            <span id="tokyo-time">
-                --
-            </span>
-
-        </div>
-
-
-        <div class="world-card">
-
-            🇺🇸
-
-            <strong>New York</strong>
-
-            <span id="ny-time">
-                --
-            </span>
-
-        </div>
-
-    </div>
-
-</section>
-
-
-<!-- =========================
-     CALCULATOR
-========================= -->
-
-<section
-    id="calculator"
-    class="section"
->
-
-    <div class="section-heading">
-
-        <h2>🧮 Calculator</h2>
-
-        <p>
-            Perform quick mathematical calculations.
-        </p>
-
-    </div>
-
-
-    <div class="calculator">
-
-        <input
-            id="calc-display"
-            type="text"
-            readonly
-            value="0"
+        <section
+            id="calculator"
+            class="section"
         >
 
+            <div class="section-heading">
 
-        <div class="calc-buttons">
+                <h2>🧮 Calculator</h2>
 
-            <button onclick="clearCalc()">AC</button>
-
-            <button onclick="deleteCalc()">⌫</button>
-
-            <button onclick="appendCalc('%')">%</button>
-
-            <button
-                class="operator"
-                onclick="appendCalc('/')"
-            >
-                ÷
-            </button>
+            </div>
 
 
-            <button onclick="appendCalc('7')">7</button>
+            <div class="calculator">
 
-            <button onclick="appendCalc('8')">8</button>
+                <input
+                    id="calc-display"
+                    readonly
+                    value="0"
+                >
 
-            <button onclick="appendCalc('9')">9</button>
+                <div class="calc-grid">
 
-            <button
-                class="operator"
-                onclick="appendCalc('*')"
-            >
-                ×
-            </button>
+                    <button onclick="clearCalc()">AC</button>
+                    <button onclick="deleteCalc()">⌫</button>
+                    <button onclick="appendCalc('%')">%</button>
+                    <button onclick="appendCalc('/')">÷</button>
 
+                    <button onclick="appendCalc('7')">7</button>
+                    <button onclick="appendCalc('8')">8</button>
+                    <button onclick="appendCalc('9')">9</button>
+                    <button onclick="appendCalc('*')">×</button>
 
-            <button onclick="appendCalc('4')">4</button>
+                    <button onclick="appendCalc('4')">4</button>
+                    <button onclick="appendCalc('5')">5</button>
+                    <button onclick="appendCalc('6')">6</button>
+                    <button onclick="appendCalc('-')">−</button>
 
-            <button onclick="appendCalc('5')">5</button>
+                    <button onclick="appendCalc('1')">1</button>
+                    <button onclick="appendCalc('2')">2</button>
+                    <button onclick="appendCalc('3')">3</button>
+                    <button onclick="appendCalc('+')">+</button>
 
-            <button onclick="appendCalc('6')">6</button>
+                    <button onclick="appendCalc('0')">0</button>
+                    <button onclick="appendCalc('.')">.</button>
+                    <button onclick="squareCalc()">x²</button>
+                    <button onclick="calculate()">=</button>
 
-            <button
-                class="operator"
-                onclick="appendCalc('-')"
-            >
-                −
-            </button>
+                </div>
 
+            </div>
 
-            <button onclick="appendCalc('1')">1</button>
-
-            <button onclick="appendCalc('2')">2</button>
-
-            <button onclick="appendCalc('3')">3</button>
-
-            <button
-                class="operator"
-                onclick="appendCalc('+')"
-            >
-                +
-            </button>
-
-
-            <button onclick="appendCalc('0')">
-                0
-            </button>
-
-            <button onclick="appendCalc('.')">
-                .
-            </button>
-
-            <button onclick="squareCalc()">
-                x²
-            </button>
-
-            <button
-                class="equals"
-                onclick="calculate()"
-            >
-                =
-            </button>
-
-        </div>
-
-    </div>
-
-</section>
+        </section>
 
 
-<!-- =========================
-     STOPWATCH
-========================= -->
+        <!-- ================= NETWORK ================= -->
 
-<section
-    id="stopwatch"
-    class="section"
->
-
-    <div class="section-heading">
-
-        <h2>⏱️ Stopwatch</h2>
-
-        <p>
-            Start, pause and reset the stopwatch.
-        </p>
-
-    </div>
-
-
-    <div class="stopwatch-box">
-
-        <div
-            id="stopwatch-display"
-            class="stopwatch-display"
+        <section
+            id="network"
+            class="section"
         >
-            00:00:00.000
-        </div>
+
+            <div class="section-heading">
+
+                <h2>🌐 Network Tools</h2>
+
+                <p>
+                    IPv4 subnet and client information.
+                </p>
+
+            </div>
 
 
-        <div class="control-buttons">
+            <div class="two-column">
 
-            <button
-                class="primary-btn"
-                onclick="startStopwatch()"
-            >
-                Start
-            </button>
+                <div class="card">
 
+                    <h3>IP / Subnet Calculator</h3>
 
-            <button
-                class="secondary-btn"
-                onclick="pauseStopwatch()"
-            >
-                Pause
-            </button>
+                    <input
+                        id="subnet-input"
+                        class="input"
+                        placeholder="192.168.1.0/24"
+                    >
 
+                    <button
+                        class="btn primary"
+                        onclick="calculateSubnet()"
+                    >
+                        Calculate
+                    </button>
 
-            <button
-                class="danger-btn"
-                onclick="resetStopwatch()"
-            >
-                Reset
-            </button>
+                    <pre
+                        id="subnet-result"
+                        class="result"
+                    ></pre>
 
-        </div>
-
-    </div>
-
-</section>
+                </div>
 
 
-<!-- =========================
-     TIMER
-========================= -->
+                <div class="card">
 
-<section
-    id="timer"
-    class="section"
->
+                    <h3>Client Information</h3>
 
-    <div class="section-heading">
+                    <button
+                        class="btn primary"
+                        onclick="getClientInfo()"
+                    >
+                        Detect Client
+                    </button>
 
-        <h2>⏳ Countdown Timer</h2>
+                    <pre
+                        id="client-result"
+                        class="result"
+                    ></pre>
 
-        <p>
-            Set a countdown and start the timer.
-        </p>
+                </div>
 
-    </div>
+            </div>
 
-
-    <div class="timer-box">
-
-        <div class="timer-inputs">
-
-            <input
-                id="timer-minutes"
-                type="number"
-                min="0"
-                max="999"
-                value="5"
-            >
-
-            <span>:</span>
-
-            <input
-                id="timer-seconds"
-                type="number"
-                min="0"
-                max="59"
-                value="0"
-            >
-
-        </div>
+        </section>
 
 
-        <div
-            id="timer-display"
-            class="timer-display"
+        <!-- ================= DEVELOPER ================= -->
+
+        <section
+            id="developer"
+            class="section"
         >
-            05:00
-        </div>
+
+            <div class="section-heading">
+
+                <h2>🛠 Developer Tools</h2>
+
+            </div>
 
 
-        <div class="control-buttons">
+            <!-- JSON -->
 
-            <button
-                class="primary-btn"
-                onclick="startTimer()"
-            >
-                Start
-            </button>
+            <div class="card tool-section">
 
+                <h3>{ } JSON Formatter</h3>
 
-            <button
-                class="secondary-btn"
-                onclick="pauseTimer()"
-            >
-                Pause
-            </button>
+                <textarea
+                    id="json-input"
+                    placeholder='{"name":"WorldDesk","status":"running"}'
+                ></textarea>
 
+                <div>
 
-            <button
-                class="danger-btn"
-                onclick="resetTimer()"
-            >
-                Reset
-            </button>
+                    <button
+                        class="btn primary"
+                        onclick="formatJSON()"
+                    >
+                        Format
+                    </button>
 
-        </div>
+                    <button
+                        class="btn secondary"
+                        onclick="minifyJSON()"
+                    >
+                        Minify
+                    </button>
 
-    </div>
+                    <button
+                        class="btn danger"
+                        onclick="clearJSON()"
+                    >
+                        Clear
+                    </button>
 
-</section>
+                </div>
 
+                <div
+                    id="json-result"
+                    class="result"
+                ></div>
 
-<!-- =========================
-     TIME CONVERTER
-========================= -->
-
-<section
-    id="converter"
-    class="section"
->
-
-    <div class="section-heading">
-
-        <h2>🔄 Timezone Converter</h2>
-
-        <p>
-            Compare time between two locations.
-        </p>
-
-    </div>
+            </div>
 
 
-    <div class="converter">
+            <!-- HASH -->
 
-        <div>
+            <div class="card tool-section">
 
-            <label>
-                From
-            </label>
+                <h3>🔐 Hash Generator</h3>
 
-            <select id="source-zone">
+                <textarea
+                    id="hash-input"
+                    placeholder="Enter text..."
+                ></textarea>
 
-                <option value="Asia/Kolkata">
-                    India
-                </option>
+                <select
+                    id="hash-algorithm"
+                    class="input"
+                >
 
-                <option value="Europe/London">
-                    London
-                </option>
+                    <option value="md5">MD5</option>
+                    <option value="sha1">SHA-1</option>
+                    <option value="sha256">SHA-256</option>
+                    <option value="sha512">SHA-512</option>
 
-                <option value="America/New_York">
-                    New York
-                </option>
+                </select>
 
-                <option value="Asia/Tokyo">
-                    Tokyo
-                </option>
+                <button
+                    class="btn primary"
+                    onclick="generateHash()"
+                >
+                    Generate Hash
+                </button>
 
-                <option value="Australia/Sydney">
-                    Sydney
-                </option>
+                <div
+                    id="hash-result"
+                    class="result"
+                ></div>
 
-                <option value="Asia/Dubai">
-                    Dubai
-                </option>
-
-            </select>
-
-        </div>
-
-
-        <div>
-
-            <label>
-                To
-            </label>
-
-            <select id="target-zone">
-
-                <option value="America/New_York">
-                    New York
-                </option>
-
-                <option value="Asia/Kolkata">
-                    India
-                </option>
-
-                <option value="Europe/London">
-                    London
-                </option>
-
-                <option value="Asia/Tokyo">
-                    Tokyo
-                </option>
-
-                <option value="Australia/Sydney">
-                    Sydney
-                </option>
-
-                <option value="Asia/Dubai">
-                    Dubai
-                </option>
-
-            </select>
-
-        </div>
+            </div>
 
 
-        <button
-            class="primary-btn"
-            onclick="convertTime()"
+            <!-- PASSWORD -->
+
+            <div class="card tool-section">
+
+                <h3>🔑 Password Generator</h3>
+
+                <input
+                    id="password-length"
+                    class="input"
+                    type="number"
+                    min="6"
+                    max="128"
+                    value="16"
+                >
+
+                <button
+                    class="btn primary"
+                    onclick="generatePassword()"
+                >
+                    Generate
+                </button>
+
+                <div
+                    id="password-result"
+                    class="generated-password"
+                ></div>
+
+            </div>
+
+
+            <!-- TIMESTAMP -->
+
+            <div class="card tool-section">
+
+                <h3>🕒 Unix Timestamp</h3>
+
+                <button
+                    class="btn primary"
+                    onclick="getTimestamp()"
+                >
+                    Get Current Timestamp
+                </button>
+
+                <div
+                    id="timestamp-result"
+                    class="result"
+                ></div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= TIMERS ================= -->
+
+        <section
+            id="timers"
+            class="section"
         >
-            Convert
-        </button>
+
+            <div class="section-heading">
+
+                <h2>⏱ Timers</h2>
+
+            </div>
 
 
-        <div
-            id="conversion-result"
-            class="conversion-result"
+            <div class="two-column">
+
+
+                <!-- STOPWATCH -->
+
+                <div class="card timer-card">
+
+                    <h3>Stopwatch</h3>
+
+                    <div
+                        id="stopwatch-display"
+                        class="timer-display"
+                    >
+                        00:00:00.000
+                    </div>
+
+                    <button
+                        class="btn primary"
+                        onclick="startStopwatch()"
+                    >
+                        Start
+                    </button>
+
+                    <button
+                        class="btn secondary"
+                        onclick="pauseStopwatch()"
+                    >
+                        Pause
+                    </button>
+
+                    <button
+                        class="btn danger"
+                        onclick="resetStopwatch()"
+                    >
+                        Reset
+                    </button>
+
+                </div>
+
+
+                <!-- COUNTDOWN -->
+
+                <div class="card timer-card">
+
+                    <h3>Countdown</h3>
+
+                    <div class="timer-input-row">
+
+                        <input
+                            id="timer-minutes"
+                            class="input"
+                            type="number"
+                            value="5"
+                            min="0"
+                        >
+
+                        <input
+                            id="timer-seconds"
+                            class="input"
+                            type="number"
+                            value="0"
+                            min="0"
+                            max="59"
+                        >
+
+                    </div>
+
+
+                    <div
+                        id="timer-display"
+                        class="timer-display"
+                    >
+                        05:00
+                    </div>
+
+                    <button
+                        class="btn primary"
+                        onclick="startTimer()"
+                    >
+                        Start
+                    </button>
+
+                    <button
+                        class="btn secondary"
+                        onclick="pauseTimer()"
+                    >
+                        Pause
+                    </button>
+
+                    <button
+                        class="btn danger"
+                        onclick="resetTimer()"
+                    >
+                        Reset
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= SYSTEM ================= -->
+
+        <section
+            id="system"
+            class="section"
         >
-            Select locations and convert.
-        </div>
 
-    </div>
+            <div class="section-heading">
 
-</section>
+                <h2>🐳 System Dashboard</h2>
+
+                <p>
+                    Information about the Flask container.
+                </p>
+
+            </div>
 
 
-</main>
+            <button
+                class="btn primary"
+                onclick="loadSystemInfo()"
+            >
+                Refresh System Information
+            </button>
 
 
-<!-- Leaflet -->
+            <pre
+                id="system-result"
+                class="system-result"
+            >
+Loading system information...
+            </pre>
+
+        </section>
+
+
+        <!-- ================= NOTES ================= -->
+
+        <section
+            id="notes"
+            class="section"
+        >
+
+            <div class="section-heading">
+
+                <h2>📝 Notes</h2>
+
+                <p>
+                    Notes are saved in your browser.
+                </p>
+
+            </div>
+
+
+            <div class="card">
+
+                <textarea
+                    id="notes-area"
+                    class="notes"
+                    placeholder="Write your notes here..."
+                ></textarea>
+
+                <button
+                    class="btn primary"
+                    onclick="saveNotes()"
+                >
+                    Save Notes
+                </button>
+
+                <button
+                    class="btn danger"
+                    onclick="clearNotes()"
+                >
+                    Clear
+                </button>
+
+                <span id="notes-status"></span>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
 
 <script
     src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
 ></script>
 
-
 <script
     src="{{ url_for('static', filename='app.js') }}"
 ></script>
 
-
 </body>
-
 </html>
