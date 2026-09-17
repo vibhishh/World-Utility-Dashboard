@@ -33,8 +33,10 @@ function showSection(id) {
         .textContent = titles[id];
 
     if (id === "world") {
-        setTimeout(() => map.invalidateSize(), 200);
-    }
+    setTimeout(() => {
+        resizeGlobe();
+    }, 300);
+}
 
     if (id === "system") {
         loadSystemInfo();
@@ -194,211 +196,844 @@ function calculate() {
     updateCalculator();
 }
 
+/* =========================================
+   3D WORLD CLOCK
+========================================= */
 
-/* =========================
-   WORLD MAP
-========================= */
-
-const map =
-    L.map("map")
-        .setView([20, 0], 2);
-
-
-L.tileLayer(
-    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-    {
-        attribution:
-            "&copy; OpenStreetMap contributors"
-    }
-).addTo(map);
+let globe;
+let selectedCountry = null;
+let countryData = [];
 
 
-const locations = {
+/*
+   Country → timezone mapping.
 
-    India: [20.5937, 78.9629],
+   We keep this on the frontend so the
+   globe can immediately display the
+   correct live time.
+*/
 
-    "United States": [37.0902, -95.7129],
+const countryTimezones = {
 
-    "United Kingdom": [55.3781, -3.4360],
+    "India": "Asia/Kolkata",
+    "United States": "America/New_York",
+    "Canada": "America/Toronto",
+    "Mexico": "America/Mexico_City",
 
-    Canada: [56.1304, -106.3468],
+    "United Kingdom": "Europe/London",
+    "Ireland": "Europe/Dublin",
 
-    Australia: [-25.2744, 133.7751],
+    "France": "Europe/Paris",
+    "Germany": "Europe/Berlin",
+    "Italy": "Europe/Rome",
+    "Spain": "Europe/Madrid",
+    "Portugal": "Europe/Lisbon",
+    "Netherlands": "Europe/Amsterdam",
+    "Belgium": "Europe/Brussels",
+    "Switzerland": "Europe/Zurich",
+    "Austria": "Europe/Vienna",
+    "Poland": "Europe/Warsaw",
+    "Greece": "Europe/Athens",
+    "Sweden": "Europe/Stockholm",
+    "Norway": "Europe/Oslo",
+    "Finland": "Europe/Helsinki",
+    "Denmark": "Europe/Copenhagen",
 
-    Japan: [36.2048, 138.2529],
+    "Russia": "Europe/Moscow",
+    "Turkey": "Europe/Istanbul",
 
-    China: [35.8617, 104.1954],
+    "Japan": "Asia/Tokyo",
+    "South Korea": "Asia/Seoul",
+    "China": "Asia/Shanghai",
+    "Mongolia": "Asia/Ulaanbaatar",
 
-    Singapore: [1.3521, 103.8198],
+    "Singapore": "Asia/Singapore",
+    "Malaysia": "Asia/Kuala_Lumpur",
+    "Thailand": "Asia/Bangkok",
+    "Vietnam": "Asia/Ho_Chi_Minh",
+    "Indonesia": "Asia/Jakarta",
+    "Philippines": "Asia/Manila",
 
-    UAE: [23.4241, 53.8478],
+    "Nepal": "Asia/Kathmandu",
+    "Bangladesh": "Asia/Dhaka",
+    "Pakistan": "Asia/Karachi",
+    "Sri Lanka": "Asia/Colombo",
 
-    Germany: [51.1657, 10.4515],
+    "United Arab Emirates": "Asia/Dubai",
+    "Saudi Arabia": "Asia/Riyadh",
+    "Qatar": "Asia/Qatar",
+    "Israel": "Asia/Jerusalem",
 
-    France: [46.2276, 2.2137],
+    "Australia": "Australia/Sydney",
+    "New Zealand": "Pacific/Auckland",
 
-    Brazil: [-14.235, -51.9253],
+    "Brazil": "America/Sao_Paulo",
+    "Argentina": "America/Argentina/Buenos_Aires",
+    "Chile": "America/Santiago",
+    "Colombia": "America/Bogota",
+    "Peru": "America/Lima",
 
-    Mexico: [23.6345, -102.5528],
-
-    "South Africa": [-30.5595, 22.9375],
-
-    Russia: [61.5240, 105.3188],
-
-    "South Korea": [35.9078, 127.7669],
-
-    Thailand: [15.87, 100.9925],
-
-    Nepal: [28.3949, 84.1240],
-
-    Indonesia: [-0.7893, 113.9213],
-
-    "New Zealand": [-40.9006, 174.8860]
-
+    "South Africa": "Africa/Johannesburg",
+    "Egypt": "Africa/Cairo",
+    "Nigeria": "Africa/Lagos",
+    "Kenya": "Africa/Nairobi",
+    "Morocco": "Africa/Casablanca"
 };
 
 
-let selectedCountry = null;
+/* =========================================
+   COUNTRY FLAGS
+========================================= */
+
+const countryFlags = {
+
+    India: "🇮🇳",
+    "United States": "🇺🇸",
+    Canada: "🇨🇦",
+    Mexico: "🇲🇽",
+
+    "United Kingdom": "🇬🇧",
+    Ireland: "🇮🇪",
+
+    France: "🇫🇷",
+    Germany: "🇩🇪",
+    Italy: "🇮🇹",
+    Spain: "🇪🇸",
+    Portugal: "🇵🇹",
+
+    Japan: "🇯🇵",
+    "South Korea": "🇰🇷",
+    China: "🇨🇳",
+
+    Singapore: "🇸🇬",
+    Malaysia: "🇲🇾",
+    Thailand: "🇹🇭",
+    Indonesia: "🇮🇩",
+
+    Nepal: "🇳🇵",
+    Bangladesh: "🇧🇩",
+    Pakistan: "🇵🇰",
+
+    "United Arab Emirates": "🇦🇪",
+    "Saudi Arabia": "🇸🇦",
+
+    Australia: "🇦🇺",
+    "New Zealand": "🇳🇿",
+
+    Brazil: "🇧🇷",
+    Argentina: "🇦🇷",
+    Chile: "🇨🇱",
+
+    "South Africa": "🇿🇦",
+    Egypt: "🇪🇬",
+    Nigeria: "🇳🇬",
+    Kenya: "🇰🇪"
+};
 
 
-Object.entries(locations)
-    .forEach(([country, coordinates]) => {
+/* =========================================
+   LOAD REAL WORLD COUNTRY DATA
+========================================= */
 
-        const marker =
-            L.marker(coordinates)
-                .addTo(map);
-
-        marker.bindTooltip(country);
-
-        marker.on("click", () => {
-
-            selectedCountry = country;
-
-            loadCountry(country);
-
-        });
-
-    });
-
-
-async function loadCountry(country) {
+async function loadWorldGlobe() {
 
     try {
 
-        const response =
-            await fetch(
-                `/api/country/${encodeURIComponent(country)}`
-            );
+        const response = await fetch(
+            "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson"
+        );
 
-        const data =
+        const geojson =
             await response.json();
 
+        countryData =
+            geojson.features;
+
+        createGlobe(countryData);
+
+    } catch (error) {
+
+        console.error(
+            "Unable to load world map:",
+            error
+        );
+
+    }
+}
+
+
+/* =========================================
+   CREATE 3D GLOBE
+========================================= */
+
+function createGlobe(countries) {
+
+    globe = Globe()(
+
+        document.getElementById("globe")
+
+    )
+
+    /*
+       Real Earth texture
+    */
+
+    .globeImageUrl(
+        "https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg"
+    )
+
+    /*
+       Earth elevation
+    */
+
+    .bumpImageUrl(
+        "https://unpkg.com/three-globe/example/img/earth-topology.png"
+    )
+
+    /*
+       Stars / space background
+    */
+
+    .backgroundImageUrl(
+        "https://unpkg.com/three-globe/example/img/night-sky.png"
+    )
+
+    /*
+       Atmosphere
+    */
+
+    .showAtmosphere(true)
+
+    .atmosphereColor(
+        "#38bdf8"
+    )
+
+    .atmosphereAltitude(
+        0.20
+    )
+
+    /*
+       Country polygons
+    */
+
+    .polygonsData(countries)
+
+    .polygonAltitude(0.008)
+
+    .polygonCapColor(
+        feature => {
+
+            const name =
+                feature.properties.name;
+
+            if (
+                selectedCountry &&
+                name === selectedCountry
+            ) {
+
+                return "rgba(34,211,238,0.65)";
+
+            }
+
+            return "rgba(15,118,110,0.18)";
+        }
+    )
+
+    .polygonSideColor(
+        () =>
+            "rgba(34,211,238,0.25)"
+    )
+
+    .polygonStrokeColor(
+        () =>
+            "rgba(103,232,249,0.65)"
+    )
+
+    .polygonLabel(
+        feature => {
+
+            const name =
+                feature.properties.name;
+
+            return `
+                <div style="
+                    padding:8px 12px;
+                    border-radius:8px;
+                    background:#020617;
+                    color:#67e8f9;
+                    font-family:Arial;
+                    font-size:12px;
+                ">
+                    🌍 ${name}
+                </div>
+            `;
+        }
+    )
+
+    /*
+       Country click
+    */
+
+    .onPolygonClick(
+        feature => {
+
+            const name =
+                feature.properties.name;
+
+            selectCountry(name);
+
+        }
+    )
+
+    /*
+       Hover
+    */
+
+    .onPolygonHover(
+        feature => {
+
+            const name =
+                feature
+                ? feature.properties.name
+                : null;
+
+            document.body.style.cursor =
+                name
+                    ? "pointer"
+                    : "default";
+        }
+    );
+
+
+    /*
+       Initial Earth position
+    */
+
+    globe.pointOfView({
+        lat: 20,
+        lng: 78,
+        altitude: 2.2
+    });
+
+
+    /*
+       Controls
+    */
+
+    const controls =
+        globe.controls();
+
+    controls.autoRotate = true;
+
+    controls.autoRotateSpeed = 0.35;
+
+    controls.enableZoom = true;
+
+    controls.minDistance = 120;
+
+    controls.maxDistance = 500;
+
+
+    /*
+       Stop automatic rotation
+       when user interacts.
+    */
+
+    controls.addEventListener(
+        "start",
+        () => {
+
+            controls.autoRotate =
+                false;
+
+        }
+    );
+
+
+    /*
+       Resize
+    */
+
+    resizeGlobe();
+
+}
+
+
+/* =========================================
+   RESIZE GLOBE
+========================================= */
+
+function resizeGlobe() {
+
+    if (!globe)
+        return;
+
+    const container =
         document.getElementById(
-            "country-name"
-        ).textContent =
-            data.country;
+            "globe"
+        );
+
+    globe
+        .width(
+            container.clientWidth
+        )
+        .height(
+            container.clientHeight
+        );
+}
+
+
+window.addEventListener(
+    "resize",
+    resizeGlobe
+);
+
+
+/* =========================================
+   SELECT COUNTRY
+========================================= */
+
+function selectCountry(country) {
+
+    selectedCountry =
+        country;
+
+
+    const timezone =
+        countryTimezones[country];
+
+
+    /*
+       Update UI
+    */
+
+    document.getElementById(
+        "country-name"
+    ).textContent =
+        country;
+
+
+    document.getElementById(
+        "country-flag"
+    ).textContent =
+        countryFlags[country] || "🌍";
+
+
+    if (!timezone) {
 
         document.getElementById(
             "country-time"
         ).textContent =
-            data.time;
-
-        document.getElementById(
-            "country-date"
-        ).textContent =
-            data.date;
+            "Timezone unavailable";
 
         document.getElementById(
             "country-zone"
         ).textContent =
-            `${data.timezone} • UTC ${formatUTC(data.utc_offset)}`;
+            "Not configured";
 
-    } catch (error) {
+        return;
+    }
 
-        console.error(error);
+
+    /*
+       Focus globe on country
+    */
+
+    const feature =
+        countryData.find(
+            item =>
+                item.properties.name === country
+        );
+
+
+    if (feature) {
+
+        const center =
+            calculateCountryCenter(
+                feature
+            );
+
+        if (center) {
+
+            globe.pointOfView(
+                {
+                    lat: center.lat,
+                    lng: center.lng,
+                    altitude: 1.8
+                },
+                1000
+            );
+
+        }
 
     }
+
+
+    updateSelectedCountry();
+
+
+    /*
+       Refresh polygon colors
+    */
+
+    globe.polygonsData(
+        [...countryData]
+    );
 }
 
 
-function formatUTC(value) {
+/* =========================================
+   COUNTRY CENTER
+========================================= */
 
-    if (!value) return "--";
-
-    const sign =
-        value.startsWith("-")
-            ? "-"
-            : "+";
-
-    return `${sign}${value.substring(1,3)}:${value.substring(3,5)}`;
-}
-
-
-/* Quick clocks */
-
-async function quickClock(
-    country,
-    element
+function calculateCountryCenter(
+    feature
 ) {
 
     try {
 
-        const response =
-            await fetch(
-                `/api/country/${encodeURIComponent(country)}`
+        const coordinates =
+            feature.geometry.coordinates;
+
+        let points = [];
+
+
+        function collect(
+            array
+        ) {
+
+            if (
+                typeof array[0] ===
+                "number"
+            ) {
+
+                points.push(array);
+
+                return;
+
+            }
+
+            array.forEach(
+                collect
             );
 
-        const data =
-            await response.json();
+        }
 
-        document.getElementById(element)
-            .textContent =
-            data.time;
+
+        collect(coordinates);
+
+
+        if (!points.length)
+            return null;
+
+
+        let lng = 0;
+        let lat = 0;
+
+
+        points.forEach(
+            point => {
+
+                lng += point[0];
+                lat += point[1];
+
+            }
+        );
+
+
+        return {
+
+            lat:
+                lat / points.length,
+
+            lng:
+                lng / points.length
+
+        };
 
     } catch {
 
-        document.getElementById(element)
-            .textContent =
-            "--:--:--";
+        return null;
 
     }
+}
+
+
+/* =========================================
+   UPDATE SELECTED COUNTRY CLOCK
+========================================= */
+
+function updateSelectedCountry() {
+
+    if (!selectedCountry)
+        return;
+
+
+    const timezone =
+        countryTimezones[
+            selectedCountry
+        ];
+
+
+    if (!timezone)
+        return;
+
+
+    const now =
+        new Date();
+
+
+    const time =
+        new Intl.DateTimeFormat(
+            "en-GB",
+            {
+                timeZone:
+                    timezone,
+
+                hour:
+                    "2-digit",
+
+                minute:
+                    "2-digit",
+
+                second:
+                    "2-digit",
+
+                hour12:
+                    false
+            }
+        ).format(now);
+
+
+    const date =
+        new Intl.DateTimeFormat(
+            "en-GB",
+            {
+                timeZone:
+                    timezone,
+
+                weekday:
+                    "long",
+
+                day:
+                    "numeric",
+
+                month:
+                    "long",
+
+                year:
+                    "numeric"
+            }
+        ).format(now);
+
+
+    const offset =
+        getUTCOffset(
+            timezone
+        );
+
+
+    const hour =
+        Number(
+            new Intl.DateTimeFormat(
+                "en-US",
+                {
+                    timeZone:
+                        timezone,
+
+                    hour:
+                        "numeric",
+
+                    hour12:
+                        false
+                }
+            ).format(now)
+        );
+
+
+    let status;
+
+    if (
+        hour >= 6 &&
+        hour < 18
+    ) {
+
+        status =
+            "☀️ Daytime";
+
+    } else {
+
+        status =
+            "🌙 Night";
+
+    }
+
+
+    document.getElementById(
+        "country-time"
+    ).textContent =
+        time;
+
+
+    document.getElementById(
+        "country-date"
+    ).textContent =
+        date;
+
+
+    document.getElementById(
+        "country-zone"
+    ).textContent =
+        timezone;
+
+
+    document.getElementById(
+        "country-offset"
+    ).textContent =
+        offset;
+
+
+    document.getElementById(
+        "day-status"
+    ).textContent =
+        status;
+}
+
+
+/* =========================================
+   UTC OFFSET
+========================================= */
+
+function getUTCOffset(
+    timezone
+) {
+
+    const now =
+        new Date();
+
+
+    const parts =
+        new Intl.DateTimeFormat(
+            "en-US",
+            {
+                timeZone:
+                    timezone,
+
+                timeZoneName:
+                    "longOffset"
+            }
+        ).formatToParts(now);
+
+
+    const offset =
+        parts.find(
+            part =>
+                part.type ===
+                "timeZoneName"
+        );
+
+
+    return offset
+        ? offset.value
+        : "UTC";
+}
+
+
+/* =========================================
+   QUICK WORLD CLOCKS
+========================================= */
+
+function updateQuickClock(
+    timezone,
+    element
+) {
+
+    const time =
+        new Intl.DateTimeFormat(
+            "en-GB",
+            {
+                timeZone:
+                    timezone,
+
+                hour:
+                    "2-digit",
+
+                minute:
+                    "2-digit",
+
+                second:
+                    "2-digit",
+
+                hour12:
+                    false
+            }
+        ).format(
+            new Date()
+        );
+
+
+    document.getElementById(
+        element
+    ).textContent =
+        time;
 }
 
 
 function updateWorldClocks() {
 
-    quickClock(
-        "India",
+    updateQuickClock(
+        "Asia/Kolkata",
         "india-time"
     );
 
-    quickClock(
-        "United Kingdom",
+    updateQuickClock(
+        "Europe/London",
         "london-time"
     );
 
-    quickClock(
-        "United States",
+    updateQuickClock(
+        "America/New_York",
         "ny-time"
     );
 
-    quickClock(
-        "Japan",
+    updateQuickClock(
+        "Asia/Tokyo",
         "tokyo-time"
     );
 
+    updateQuickClock(
+        "Asia/Dubai",
+        "dubai-time"
+    );
+
+    updateQuickClock(
+        "Asia/Singapore",
+        "singapore-time"
+    );
+
+
     if (selectedCountry) {
-        loadCountry(selectedCountry);
+
+        updateSelectedCountry();
+
     }
+
 }
+
 
 setInterval(
     updateWorldClocks,
     1000
 );
 
-updateWorldClocks();
 
+/*
+   Start
+*/
+
+loadWorldGlobe();
+
+updateWorldClocks();
 
 /* =========================
    SUBNET
