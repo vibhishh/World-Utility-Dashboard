@@ -11,12 +11,6 @@
     >
 
     <title>WorldDesk</title>
-
-    <link
-        rel="stylesheet"
-        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    >
-
     <link
         rel="stylesheet"
         href="{{ url_for('static', filename='style.css') }}"
@@ -276,83 +270,152 @@
 
         </section>
 
+	<!-- ================= WORLD CLOCK ================= -->
 
-        <!-- ================= WORLD ================= -->
+<section id="world" class="section">
 
-        <section
-            id="world"
-            class="section"
-        >
+    <div class="section-heading">
 
-            <div class="section-heading">
+        <h2>🌍 World Clock</h2>
 
-                <h2>🌍 World Clock</h2>
+        <p>
+            Rotate the Earth and click any country to check its local time.
+        </p>
 
-                <p>
-                    Click a location to view its live time.
-                </p>
+    </div>
 
+    <div class="globe-layout">
+
+        <!-- 3D EARTH -->
+
+        <div class="globe-card">
+
+            <div id="globe"></div>
+
+            <div class="globe-hint">
+                🖱️ Drag to rotate &nbsp; • &nbsp;
+                🔍 Scroll to zoom &nbsp; • &nbsp;
+                🌎 Click a country
             </div>
 
+        </div>
 
-            <div class="map-wrapper">
 
-                <div id="map"></div>
+        <!-- COUNTRY INFORMATION -->
 
-                <div class="country-panel">
+        <div class="country-panel">
 
-                    <small>
-                        SELECTED LOCATION
-                    </small>
+            <div class="selected-label">
+                SELECTED COUNTRY
+            </div>
 
-                    <h2 id="country-name">
-                        Select a country
-                    </h2>
+            <div id="country-flag"
+                 class="country-flag">
+                🌍
+            </div>
 
-                    <div id="country-time">
-                        --:--:--
-                    </div>
+            <h2 id="country-name">
+                Select a country
+            </h2>
 
-                    <p id="country-date">
+            <div id="country-time">
+                --:--:--
+            </div>
+
+            <div id="country-date">
+                --
+            </div>
+
+            <div class="country-info">
+
+                <div>
+                    <span>TIMEZONE</span>
+                    <strong id="country-zone">
                         --
-                    </p>
+                    </strong>
+                </div>
 
-                    <p id="country-zone">
-                        Timezone: --
-                    </p>
+                <div>
+                    <span>UTC OFFSET</span>
+                    <strong id="country-offset">
+                        --
+                    </strong>
+                </div>
 
+                <div>
+                    <span>STATUS</span>
+                    <strong id="day-status">
+                        --
+                    </strong>
                 </div>
 
             </div>
 
+        </div>
 
-            <div class="clock-grid">
-
-                <div class="clock-card">
-                    🇮🇳 India
-                    <strong id="india-time">--</strong>
-                </div>
-
-                <div class="clock-card">
-                    🇬🇧 London
-                    <strong id="london-time">--</strong>
-                </div>
-
-                <div class="clock-card">
-                    🇺🇸 New York
-                    <strong id="ny-time">--</strong>
-                </div>
-
-                <div class="clock-card">
-                    🇯🇵 Tokyo
-                    <strong id="tokyo-time">--</strong>
-                </div>
-
-            </div>
-
-        </section>
+    </div>
 
 
+    <!-- QUICK CLOCKS -->
+
+    <h2 class="section-title">
+        Global Clocks
+    </h2>
+
+    <div class="clock-grid">
+
+        <div class="clock-card">
+            🇮🇳
+            <span>India</span>
+            <strong id="india-time">
+                --:--:--
+            </strong>
+        </div>
+
+        <div class="clock-card">
+            🇬🇧
+            <span>London</span>
+            <strong id="london-time">
+                --:--:--
+            </strong>
+        </div>
+
+        <div class="clock-card">
+            🇺🇸
+            <span>New York</span>
+            <strong id="ny-time">
+                --:--:--
+            </strong>
+        </div>
+
+        <div class="clock-card">
+            🇯🇵
+            <span>Tokyo</span>
+            <strong id="tokyo-time">
+                --:--:--
+            </strong>
+        </div>
+
+        <div class="clock-card">
+            🇦🇪
+            <span>Dubai</span>
+            <strong id="dubai-time">
+                --:--:--
+            </strong>
+        </div>
+
+        <div class="clock-card">
+            🇸🇬
+            <span>Singapore</span>
+            <strong id="singapore-time">
+                --:--:--
+            </strong>
+        </div>
+
+    </div>
+
+</section>
+       
         <!-- ================= CALCULATOR ================= -->
 
         <section
@@ -830,13 +893,11 @@ Loading system information...
 </div>
 
 
-<script
-    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-></script>
+<script src="https://unpkg.com/globe.gl"></script>
 
 <script
-    src="{{ url_for('static', filename='app.js') }}"
-></script>
+    src="{{ url_for('static', filename='app.js') }}">
+</script>
 
 </body>
 </html>
