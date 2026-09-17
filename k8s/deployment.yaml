@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: world-utility
+  labels:
+    app: world-utility
+    
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: world-utility
+  template:
+    metadata:
+      labels:
+        app: world-utility
+    spec:
+      containers:
+        - name: world-utility
+          image: mradulsingh25/world-utility-dashboard:latest
+          ports:
+            - containerPort: 9090
+          imagePullPolicy: Always
